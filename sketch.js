@@ -26,13 +26,15 @@ function draw() {
 
 function update() {
   for (let i = 0; i < circles.length; i++) {
+    let circ1 = circles[i];
     for (let j = 0; j < i; j++) {
-      if (i.isTouching(j)) {
-        if (j.state == INFECTED && random(0, 1) < probability) {
-          i.state = INFECTED;
+      let circ2 = circles[j];
+      if (circ1.isTouching(circ2)) {
+        if (circ2.state == INFECTED && random(0, 1) < probability) {
+          circ1.state = INFECTED;
         }
-        if (i.state == INFECTED && random(0, 1) < probability) {
-          j.state = INFECTED;
+        if (circ1.state == INFECTED && random(0, 1) < probability) {
+          circ2.state = INFECTED;
         }
       }
     }
