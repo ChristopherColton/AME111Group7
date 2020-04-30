@@ -50,6 +50,6 @@ function Circle() {
   }
   
   this.changeColor = function() {
-    this.col = color(150);
+    this.col = color('red');
   }
 }
