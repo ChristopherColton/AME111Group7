@@ -1,12 +1,22 @@
+// List of instruments and their circles
 var circles = [];
+
+// Chance of getting infected
 var probability = 0.25;
+
+// X and y of... what again?
 var x = 50;
 var y = 50;
 var stateColors;
+
 var horizSpacing = 100;
 var vertSpacing = 100;
 var leftMargin = 0;
 var rightMargin = 1000;
+
+var tick = 1;
+
+var playing = false;
 
 //pictures
 var clarinet;
@@ -14,7 +24,12 @@ var drum;
 var sax;
 var tuba;
 var violin;
+//sounds
+var instOne;
+var instTwo;
+var instThree;
 var instrumentImages;
+var instrumentTracks;
 
 // Constants for viral states
 const SUSCEPTIBLE = 0;
@@ -27,6 +42,9 @@ function preload(){
   sax = loadImage('images/Sax1.png');
   tuba = loadImage('images/Tuba1.png');
   violin = loadImage('images/Violin1.png');
+  instOne = loadSound('music/One (130 BPM).mp3');
+  instTwo = loadSound('music/Two (130 BPM).mp3');
+  instThree = loadSound('music/Three (130 BPM).mp3');
 }
 
 function setup() {
@@ -38,6 +56,9 @@ function setup() {
   instrumentImages = [
     clarinet, drum, sax, tuba, violin
   ];
+  instrumentTracks = [
+    instOne, instTwo, instThree
+  ];
   createCanvas(1000, 600);
   for (let i = leftMargin; i < 10; i++) {
     circles.push(new Circle(x, y));
@@ -48,15 +69,63 @@ function setup() {
       y += vertSpacing;
     }
   }
+  //button to start
+  buttonStart = createButton('Start');
+  buttonStart.position(100,100);
+  buttonStart.mousePressed(play);
+  //button to stop
+  buttonStop = createButton('Stop');
+  buttonStop.position(150,100);
+  buttonStop.mousePressed(stop);
+  //button to reset simulation
+  buttonReset = createButton('Reset');
+  buttonReset.position(200,100);
+  buttonReset.mousePressed(reset);
+  //slider probability
+  sliderProb = createSlider(0,100,25);
+  sliderProb.position(100,50);
+  sliderProb.style('width', '100px');
+
   ellipseMode(CENTER);
   imageMode(CENTER);
   circles[0].state = INFECTED;
 } 
 
+function play() {
+  playing = true;
+  for (let inst of instrumentTracks) {
+    inst.loop();
+  }
+}
+
+function reset() {
+  playing = false;
+  tick = 1;
+  for (let circle of circles) {
+    circle.state = SUSCEPTIBLE;
+  }
+  circles[0].state = INFECTED;
+  for (let inst of instrumentTracks) {
+    inst.stop();
+  }
+}
+
+function stop() {
+  playing = false;
+  for (let inst of instrumentTracks) {
+    inst.pause();
+  }
+}
+
+
 function draw() { 
   background(255);
 
-  update();
+  probability = sliderProb.value() / 100;
+
+  if (tick % 100 == 0 && playing) {
+    update();
+  }
 
   for (let i = 0; i < circles.length; i++) {
     circles[i].displayRadius();
@@ -64,6 +133,11 @@ function draw() {
   for (let i = 0; i < circles.length; i++) {
     circles[i].display();
   }
+
+  if (playing) tick++;
+  fill(color('red'));
+  textSize(50);
+  text("Day " + floor(tick/100), 0, 400);
 }
 
 function update() {
@@ -81,7 +155,7 @@ function update() {
         }
       }
     }
-  }  
+  }
 }
 
 function Circle(x, y) {
