@@ -1,19 +1,17 @@
-// List of instruments and their circles
+  // List of instruments and their circles
 var circles = [];
 
 // Chance of getting infected
 var probability = 0.25;
 var reinfect = false;
 var radius = 100;
+var orchestraSize = 20;
 
-// X and y of... what again?
-var x = 50;
-var y = 50;
 var stateColors;
 
 var horizSpacing = 100;
 var vertSpacing = 100;
-var leftMargin = 0;
+var leftMargin = 50;
 var rightMargin = 1000;
 
 var tick = 1;
@@ -21,10 +19,10 @@ var tick = 1;
 var playing = false;
 
 //pictures
-var clarinet;
-var drum;
-var sax;
-var tuba;
+var trumpet;
+var electric;
+var grand;
+var bass;
 var violin;
 //sounds
 var instOne;
@@ -39,64 +37,54 @@ const INFECTED = 1;
 const REMOVED = 2;
 
 function preload(){
-  clarinet = loadImage('images/Clarinet1.png');
-  drum = loadImage('images/Drum1.png');
-  sax = loadImage('images/Sax1.png');
-  tuba = loadImage('images/Tuba1.png');
-  violin = loadImage('images/Violin1.png');
-  instOne = loadSound('music/One (130 BPM).mp3');
-  instTwo = loadSound('music/Two (130 BPM).mp3');
-  instThree = loadSound('music/Three (130 BPM).mp3');
+  trumpet = loadImage('Images/trumpet.png');
+  electric = loadImage('Images/electricPiano.png');
+  grand = loadImage('Images/grandPiano.png');
+  bass = loadImage('Images/uprightBass.png');
+  violin = loadImage('Images/Violin1.png');
+
+  instOne = createAudio('Music/One (130 BPM).mp3');
+  instTwo = createAudio('Music/Two (130 BPM).mp3');
+  instThree = createAudio('Music/Three (130 BPM).mp3');
 }
 
 function setup() {
   stateColors = [
-    color('white'),
+    color('green'),
     color('red'),
-    color('green')
+    color('white')
   ];
   instrumentImages = [
-    clarinet, drum, sax, tuba, violin
+    trumpet, electric, grand, bass, violin
   ];
   instrumentTracks = [
     instOne, instTwo, instThree
   ];
+  info = createP('Simulation not yet started');
   canvas = createCanvas(1000, 600);
-  for (let i = leftMargin; i < 10; i++) {
-    circles.push(new Circle(x, y));
-    x += horizSpacing;
-    if (x > rightMargin)
-    {
-      x = leftMargin;
-      y += vertSpacing;
-    }
-  }
+  reset();
   createElement('br');
+
+  
   //button to start
   buttonStart = createButton('Start');
-  //buttonStart.position(-500,100, 'sticky');
   buttonStart.mousePressed(play);
   //button to stop
   buttonStop = createButton('Stop');
-  //buttonStop.position(-500,150, 'sticky');
   buttonStop.mousePressed(stop);
   //button to reset simulation
   buttonReset = createButton('Reset');
-  //buttonReset.position(-500,200, 'sticky');
   buttonReset.mousePressed(reset);
   //slider probability
   createP("Infection probability: ");
-  sliderProb = createSlider(0,100,25);
-  //sliderProb.position(100,50);
+  sliderProb = createSlider(0,100,50);
   sliderProb.style('width', '100px');
   //slider for orchestra size
   createP("Orchestra size: ");
-  sliderOSize = createSlider(0,100,25);
-  //sliderOSize.position(100,75);
+  sliderOSize = createSlider(5,60,20);
   //slider for radius size
   createP("Infection radius: ");
-  sliderRSize = createSlider(0,100,25);
-  //sliderRSize.position(100,100);
+  sliderRSize = createSlider(0,100,75);
   //check for reinfection or not
   checkbox = createCheckbox('Reinfection', false);
 
@@ -111,11 +99,29 @@ function play() {
   for (let inst of instrumentTracks) {
     inst.loop();
   }
+  info.html(
+    '<span style="color:black">Day ' + floor(tick/100) + '</span> ' +
+    '<span style="color:green">Susceptible: ' + countState(SUSCEPTIBLE) + '</span> ' +
+    '<span style="color:red">Infected: ' + countState(INFECTED) + '</span> ' +
+    '<span style="color:grey">Removed: ' + countState(REMOVED) + '</span>'
+  );
 }
 
 function reset() {
   playing = false;
   tick = 1;
+  circles = [];
+  let x = leftMargin;
+  let y = 50;
+  for (let i = 0; i < orchestraSize; i++) {
+    circles.push(new Circle(x, y));
+    x += horizSpacing;
+    if (x > rightMargin)
+    {
+      x = leftMargin;
+      y += vertSpacing;
+    }
+  }
   for (let circle of circles) {
     circle.state = SUSCEPTIBLE;
   }
@@ -123,6 +129,7 @@ function reset() {
   for (let inst of instrumentTracks) {
     inst.stop();
   }
+  info.html('Simulation not yet started');
 }
 
 function stop() {
@@ -132,18 +139,16 @@ function stop() {
   }
 }
 
-
-
 function draw() {
 
   // Draw background
-  background(255);
+  background(235);
 
   // Take slider and checkbox inputs
   probability = sliderProb.value() / 100;
   reinfect = checkbox.checked();
   radius = sliderRSize.value();
-
+  orchestraSize = sliderOSize.value();
   
   // Calculate generation
   if (tick % 100 == 0 && playing) {
@@ -162,12 +167,17 @@ function draw() {
   if (playing) tick++;
 
   // Draw text
-  fill(color('red'));
-  textSize(50);
-  text("Day " + floor(tick/100), 0, 400);
-  textSize(25);
-  text("Susceptible: " + countState(SUSCEPTIBLE), 0, 450);
-  text("Infected: " + countState(INFECTED), 0, 500);
+  // textSize(50);
+  // fill(color('black'));
+  // text("Day " + floor(tick/100), 0, 400);
+
+  // textSize(25);
+  // fill(color('red'));
+  // text("Infected: " + countState(INFECTED), 0, 500);
+  // fill(color('green'));
+  // text("Susceptible: " + countState(SUSCEPTIBLE), 0, 450);
+  // fill(color('gray'));
+  // text("Removed: " + countState(REMOVED), 0, 550);
   
   //text for sliders
   text('Infection Probability',sliderProb.x * 2 + sliderProb.width, 35);
@@ -214,6 +224,16 @@ function update() {
   for (let circ of circles) {
     circ.state = circ.newState;
   }
+  // Update volume of instrument tracks
+  for (let i = 0; i < instrumentTracks.length; i++) {
+    instrumentTracks[i].volume(volumeOfInstrument(i));
+  }
+  info.html(
+    '<span style="color:black">Day ' + floor(tick/100) + '</span> ' +
+    '<span style="color:green">Susceptible: ' + countState(SUSCEPTIBLE) + '</span> ' +
+    '<span style="color:red">Infected: ' + countState(INFECTED) + '</span> ' +
+    '<span style="color:grey">Removed: ' + countState(REMOVED) + '</span>'
+  );
 }
 
 function Circle(x, y) {
@@ -246,6 +266,13 @@ function Circle(x, y) {
   this.infectable = function() {
     return this.state == SUSCEPTIBLE || (reinfect && this.state == REMOVED);
   }
+}
+
+function volumeOfInstrument(instNumber) {
+  let totalInstruments = countInstruments(instNumber);
+  let suscInstruments = countInstrumentState(instNumber, SUSCEPTIBLE);
+  if (totalInstruments == 0) return 0;
+  return suscInstruments / totalInstruments;
 }
 
 function countInstruments(instNumber) {

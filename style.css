@@ -1,11 +1,17 @@
 body
 {
     text-align: center;
+    background-image: url('mixerbg.jpg');
     background-color: blanchedalmond;
 }
 
 canvas
 {
     border: 5px solid black;
+}
+
+h1
+{
+    font-size: 20px;
 }
 
