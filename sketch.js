@@ -19,16 +19,14 @@ var tick = 1;
 var playing = false;
 
 //pictures
+var instrumentImages;
 var trumpet;
 var electric;
 var grand;
 var bass;
 var violin;
+
 //sounds
-var instOne;
-var instTwo;
-var instThree;
-var instrumentImages;
 var instrumentTracks;
 var grandSound;
 var trumpetSound;
@@ -48,12 +46,8 @@ function preload(){
   bass = loadImage('Images/uprightBass.png');
   violin = loadImage('Images/Violin1.png');
   
-
-  instOne = createAudio('Music/One (130 BPM).mp3');
-  instTwo = createAudio('Music/Two (130 BPM).mp3');
-  instThree = createAudio('Music/Three (130 BPM).mp3');
-  grandSound = createAudio('Music/grand_piando.wav');
-  trumpetSound = createAudio('Music/trumpet.wav');
+  grandSound = createAudio('Music/grand_piano.wav');
+  trumpetSound = createAudio('Music/trumpets.wav');
   electricSound = createAudio('Music/electric_keys.wav');
   bassSound = createAudio('Music/bass.wav');
   stringsSound = createAudio('Music/strings.wav');
@@ -69,7 +63,7 @@ function setup() {
     trumpet, electric, grand, bass, violin
   ];
   instrumentTracks = [
-    instOne, instTwo, instThree, grandSound, trumpetSound, electricSound, bassSound, stringsSound
+    trumpetSound, electricSound, grandSound, bassSound, stringsSound
   ];
   info = createP('Simulation not yet started');
   canvas = createCanvas(1000, 600);
@@ -135,6 +129,9 @@ function reset() {
   }
   for (let circle of circles) {
     circle.state = SUSCEPTIBLE;
+  }
+  for (let sound of instrumentTracks) {
+    sound.volume(1);
   }
   circles[0].state = INFECTED;
   for (let inst of instrumentTracks) {
