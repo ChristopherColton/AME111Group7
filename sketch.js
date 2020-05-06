@@ -165,25 +165,6 @@ function draw() {
 
   // Increase tick
   if (playing) tick++;
-
-  // Draw text
-  // textSize(50);
-  // fill(color('black'));
-  // text("Day " + floor(tick/100), 0, 400);
-
-  // textSize(25);
-  // fill(color('red'));
-  // text("Infected: " + countState(INFECTED), 0, 500);
-  // fill(color('green'));
-  // text("Susceptible: " + countState(SUSCEPTIBLE), 0, 450);
-  // fill(color('gray'));
-  // text("Removed: " + countState(REMOVED), 0, 550);
-  
-  //text for sliders
-  text('Infection Probability',sliderProb.x * 2 + sliderProb.width, 35);
-  text('Orchestra Size');
-  text('Radius Size');
-  
 }
 
 function update() {
