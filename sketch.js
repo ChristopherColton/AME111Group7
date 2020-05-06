@@ -30,6 +30,11 @@ var instTwo;
 var instThree;
 var instrumentImages;
 var instrumentTracks;
+var grandSound;
+var trumpetSound;
+var electricSound;
+var bassSound;
+var stringsSound;
 
 // Constants for viral states
 const SUSCEPTIBLE = 0;
@@ -42,10 +47,16 @@ function preload(){
   grand = loadImage('Images/grandPiano.png');
   bass = loadImage('Images/uprightBass.png');
   violin = loadImage('Images/Violin1.png');
+  
 
   instOne = createAudio('Music/One (130 BPM).mp3');
   instTwo = createAudio('Music/Two (130 BPM).mp3');
   instThree = createAudio('Music/Three (130 BPM).mp3');
+  grandSound = createAudio('Music/grand_piando.wav');
+  trumpetSound = createAudio('Music/trumpet.wav');
+  electricSound = createAudio('Music/electric_keys.wav');
+  bassSound = createAudio('Music/bass.wav');
+  stringsSound = createAudio('Music/strings.wav');
 }
 
 function setup() {
@@ -58,7 +69,7 @@ function setup() {
     trumpet, electric, grand, bass, violin
   ];
   instrumentTracks = [
-    instOne, instTwo, instThree
+    instOne, instTwo, instThree, grandSound, trumpetSound, electricSound, bassSound, stringsSound
   ];
   info = createP('Simulation not yet started');
   canvas = createCanvas(1000, 600);
